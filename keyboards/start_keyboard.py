@@ -13,6 +13,9 @@ def tasks_list(data: list):
     [kb.button(text=i[1], callback_data=TasksList(action='tasks_list', value=i[0])) for i in data]
     kb.adjust(2)
     kb.row(InlineKeyboardButton(text='Добавить список задач',
-                                callback_data=TasksList(action='create_list', value=0).pack()))
+                                callback_data=TasksList(action='create_list', value=0).pack()),
+           InlineKeyboardButton(text='Удалить список задач',
+                                callback_data=TasksList(action='delete_list', value=0).pack())
+           )
 
     return kb.as_markup()

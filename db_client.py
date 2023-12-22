@@ -74,15 +74,19 @@ class Database:
         query = """INSERT INTO users(user_id, name, phone) VALUES ($1, $2, $3)"""
         await self.query_update(query, data)
 
-    async def get_tasks_list(self, user_id: int):
+    async def get_tasks_list(self, user_id: int) -> list:
         query = """SELECT task_lists.id, task_lists.name FROM task_lists JOIN users ON task_lists.user_id = users.id 
                                                         WHERE users.user_id = $1"""
         result = await self.get_all_data(query, [user_id])
         return result
 
-    async def get_tasks(self, tasks_list_id: int):
+    async def get_tasks(self, tasks_list_id: int) -> list:
         query = """SELECT * FROM tasks JOIN task_lists tl on tl.id = tasks.list_id WHERE tl.id = $1"""
         return await self.get_all_data(query, [tasks_list_id])
+
+    async def create_tasks_list(self, name: str, user_id: int) -> None:
+        query = """INSERT INTO task_lists(name, user_id) VALUES ($1, (SELECT id FROM users WHERE user_id = $2))"""
+        await self.query_update(query, [name, user_id])
 
 # db = Database()
 # asyncio.run(db.create_user_table())
