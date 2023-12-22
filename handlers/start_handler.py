@@ -1,9 +1,62 @@
-from aiogram import Router, types
-from aiogram.filters.command import CommandStart
+from aiogram import Router, types, F
+from aiogram.filters.command import Command
+from aiogram.fsm.context import FSMContext
+from aiogram.fsm.state import StatesGroup, State
+from phonenumbers import parse, is_valid_number
 
+from keyboards.register_keyboard import register
+from db_client import Database
 
 router = Router()
+db = Database()
 
-@router.message(CommandStart)
+
+class Register(StatesGroup):
+    get_name = State()
+    get_phone = State()
+
+
+@router.message(Command(commands=['start']))
 async def start(message: types.Message):
-    await message.answer(f'Hello, {message.from_user.username}')
+    if await db.check_user(str(message.from_user.id)):
+        await message.answer(f'Hello, {message.from_user.username}')
+    else:
+        await message.answer('Пройдите регистрацию', reply_markup=register())
+
+
+@router.callback_query(F.data == 'register')
+async def get_name(call: types.CallbackQuery, state: FSMContext):
+
+    await call.message.answer('Введите ваше имя')
+    await call.message.delete()
+    await state.set_state(Register.get_name)
+
+
+@router.message(Register.get_name)
+async def get_phone(message: types.Message, state: FSMContext):
+    # if len(message.text) > 0:
+    await state.update_data(name=message.text)
+    await message.answer('Введите ваш номер телефона в международном формате')
+    await state.set_state(Register.get_phone)
+    # else:
+    #     await message.answer('Введите корректные данные')
+    # await message.delete()
+
+
+@router.message(Register.get_phone)
+async def register_user(message: types.Message, state: FSMContext):
+    try:
+        if is_valid_number(parse(message.text, None)):
+            fsm_data = await state.get_data()
+            name = fsm_data['name']
+            await db.register_user([str(message.from_user.id), name, message.text])
+            await message.answer('Регистрация прошла успешно!') # клавиатура логики
+            await state.clear()
+        else:
+            await message.answer('Номер телефона не корректный!')
+        await message.delete()
+    except Exception as e:
+        print(message.text)
+        print(e)
+        await message.answer('Номер телефона не корректный!')
+        await message.delete()
