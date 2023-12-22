@@ -1,12 +1,18 @@
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from aiogram.types import InlineKeyboardButton
+from aiogram.filters.callback_data import CallbackData
 
 
-def start_keyboard():
+class TasksList(CallbackData, prefix='tasks_list'):
+    action: str
+    value: int
+
+
+def tasks_list(data: list):
     kb = InlineKeyboardBuilder()
-    kb.row(
-        InlineKeyboardButton(text='Просмотр задач', callback_data='view_task'),
-        InlineKeyboardButton(text='Добавить задачу', callback_data='add_task'),
+    [kb.button(text=i[1], callback_data=TasksList(action='tasks_list', value=i[0])) for i in data]
+    kb.adjust(2)
+    kb.row(InlineKeyboardButton(text='Добавить список задач',
+                                callback_data=TasksList(action='create_list', value=0).pack()))
 
-    )
     return kb.as_markup()

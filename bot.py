@@ -2,7 +2,7 @@ import asyncio
 from aiogram import Dispatcher, Bot
 import logging
 
-from handlers import start_handler
+from handlers import start_handler, tasks_list_handler
 from config import env
 from db_client import Database
 
@@ -16,7 +16,7 @@ async def main():
     )
     bot = Bot(env("BOT_TOKEN"))
     dp = Dispatcher()
-    dp.include_router(start_handler.router)
+    dp.include_routers(start_handler.router, tasks_list_handler.router)
     await db.create_user_table()
     await db.create_tasks_table()
     await bot.delete_webhook(drop_pending_updates=True)
