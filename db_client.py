@@ -48,6 +48,17 @@ class Database:
         )
         """)
 
+    async def create_tasks_table(self):
+        await self.query_update("""
+        CREATE TABLE IF NOT EXISTS tasks(
+        id SERIAL PRIMARY KEY ,
+        description varchar(100),
+        task TEXT,
+        completed BOOLEAN DEFAULT FALSE,
+        user_id INTEGER REFERENCES users(id) ON DELETE CASCADE 
+        )
+        """)
+
     async def check_user(self, user_id: str) -> bool:
         query = """SELECT EXISTS (SELECT 1 FROM users WHERE user_id = $1)"""
         result = await self.get_data_value(query, user_id)

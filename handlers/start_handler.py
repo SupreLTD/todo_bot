@@ -5,6 +5,7 @@ from aiogram.fsm.state import StatesGroup, State
 from phonenumbers import parse, is_valid_number
 
 from keyboards.register_keyboard import register
+from keyboards.start_keyboard import start_keyboard
 from db_client import Database
 
 router = Router()
@@ -19,7 +20,7 @@ class Register(StatesGroup):
 @router.message(Command(commands=['start']))
 async def start(message: types.Message):
     if await db.check_user(str(message.from_user.id)):
-        await message.answer(f'Hello, {message.from_user.username}')
+        await message.answer(f'Привет, {message.from_user.username}\nВыбери меню:',reply_markup=start_keyboard())
     else:
         await message.answer('Пройдите регистрацию', reply_markup=register())
 
