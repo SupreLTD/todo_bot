@@ -2,11 +2,9 @@ import asyncio
 from aiogram import Dispatcher, Bot
 import logging
 
+from database.db_client import db
 from handlers import start_handler, tasks_list_handler
 from config import env
-from db_client import Database
-
-db = Database()
 
 
 async def main():
@@ -21,6 +19,7 @@ async def main():
     await db.create_tasks_table()
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot)
+
 
 if __name__ == '__main__':
     asyncio.run(main())

@@ -19,3 +19,11 @@ def tasks_list(data: list):
            )
 
     return kb.as_markup()
+
+
+def start_keyboard():
+    kb = InlineKeyboardBuilder()
+    kb.button(text='Посмотреть список задач', callback_data='view_tasks')
+    kb.button(text='Добавить задачу', callback_data='add_task')
+
+    return kb.as_markup()

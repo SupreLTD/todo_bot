@@ -6,6 +6,6 @@ def register():
     kb = InlineKeyboardBuilder()
     kb.row(
         InlineKeyboardButton(text='Регистрация', callback_data='register'),
-        InlineKeyboardButton(text='Отмена', callback_data='cancel'),
+        InlineKeyboardButton(text='Отмена', callback_data='cancel_register'),
     )
     return kb.as_markup()
