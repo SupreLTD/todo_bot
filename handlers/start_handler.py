@@ -6,8 +6,9 @@ from aiogram.fsm.state import StatesGroup, State
 from phonenumbers import parse, is_valid_number
 
 from database.db_client import db
-from keyboards.start_keyboard import start_keyboard
+
 from keyboards.register_keyboard import register
+from keyboards.tasks_keyboard import start_keyboard
 
 router = Router()
 
