@@ -29,3 +29,11 @@ def start_keyboard():
     kb.row(add_task)
 
     return kb.as_markup()
+
+
+def edit_task(task_id: int):
+    kb = InlineKeyboardBuilder()
+    kb.row(InlineKeyboardButton(text='Задача выполнена', callback_data=TasksView(action='done', value=task_id).pack()),
+           InlineKeyboardButton
+
+           )

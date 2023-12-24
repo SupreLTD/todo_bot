@@ -74,7 +74,8 @@ class Database:
         return result
 
     async def get_tasks(self, user_id: int) -> list:
-        query = """SELECT tasks.id, tasks.description FROM tasks JOIN users u on tasks.user_id = u.id WHERE u.user_id = $1"""
+        query = """SELECT tasks.id, tasks.description FROM tasks JOIN users u on tasks.user_id = u.id 
+                                                                    WHERE u.user_id = $1 AND tasks.completed is false"""
         return await self.get_all_data(query, [user_id])
 
     async def create_task(self, description: str, task: str, user_id: int) -> None:
@@ -84,7 +85,4 @@ class Database:
 
 
 db = Database()
-# asyncio.run(db.create_user_table())
-# # asyncio.run(db.register_user(['5484545', 'Ivan', '+375255575577']))
-# r = asyncio.run(db.check_user('5484545'))
-# print(r)
+
