@@ -21,8 +21,10 @@ class Register(StatesGroup):
 @router.message(Command(commands=['start']))
 async def start(message: Message):
     if await db.check_user(message.from_user.id):
+        await message.delete()
         await message.answer(f'Привет, {message.from_user.username}\nВыбери действие:  ', reply_markup=start_keyboard())
     else:
+        await message.delete()
         await message.answer('Пройдите регистрацию', reply_markup=register())
 
 
@@ -64,6 +66,7 @@ async def register_user(message: Message, state: FSMContext):
 
 
 @router.callback_query(F.data == 'cancel_register')
-async def cancel_register(call: CallbackQuery):
+async def cancel_register(call: CallbackQuery, state: FSMContext):
     await call.answer('Возращайтесь для лучшего тайм - менеджмента!', show_alert=True)
     await call.message.delete()
+    await state.clear()
