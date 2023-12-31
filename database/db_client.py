@@ -87,6 +87,14 @@ class Database:
         query = """UPDATE tasks SET completed = true WHERE id = $1"""
         await self.query_update(query, [task_id])
 
+    async def get_done_tasks(self, user_id: int) -> list:
+        query = """SELECT tasks.id, tasks.task FROM tasks JOIN users u on tasks.user_id = u.id 
+                                                                            WHERE u.user_id = $1 AND tasks.completed is true"""
+        return await self.get_all_data(query, [user_id])
+
+    async def delete_done_task(self, task_id: int) -> None:
+        query = """DELETE FROM tasks WHERE user_id = (SELECT id FROM users WHERE user_id = $1) AND completed is true"""
+        await self.query_update(query, [task_id])
+
 
 db = Database()
-
