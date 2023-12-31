@@ -12,6 +12,7 @@ class TasksView(CallbackData, prefix='tasks'):
 
 add_task = InlineKeyboardButton(text='Добавить задачу',
                                 callback_data=TasksView(action='create_list', value=0).pack())
+view_tasks = InlineKeyboardButton(text='Посмотреть список задач', callback_data=TasksView(action='tasks').pack())
 
 
 def tasks_keyboard(data: list):
@@ -25,7 +26,7 @@ def tasks_keyboard(data: list):
 
 def start_keyboard():
     kb = InlineKeyboardBuilder()
-    kb.button(text='Посмотреть список задач', callback_data=TasksView(action='tasks'))
+    kb.row(view_tasks)
     kb.row(add_task)
 
     return kb.as_markup()
@@ -33,7 +34,6 @@ def start_keyboard():
 
 def edit_task(task_id: int):
     kb = InlineKeyboardBuilder()
-    kb.row(InlineKeyboardButton(text='Задача выполнена', callback_data=TasksView(action='done', value=task_id).pack()),
-           InlineKeyboardButton()
-
-           )
+    kb.row(InlineKeyboardButton(text='Задача выполнена', callback_data=TasksView(action='done', value=task_id).pack()))
+    kb.row(view_tasks)
+    return kb.as_markup()

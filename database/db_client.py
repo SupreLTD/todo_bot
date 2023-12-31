@@ -83,6 +83,10 @@ class Database:
                             VALUES ($1, $2, (SELECT id FROM users WHERE user_id = $3))"""
         await self.query_update(query, [description, task, user_id])
 
+    async def done_task(self, task_id: int) -> None:
+        query = """UPDATE tasks SET completed = true WHERE id = $1"""
+        await self.query_update(query, [task_id])
+
 
 db = Database()
 

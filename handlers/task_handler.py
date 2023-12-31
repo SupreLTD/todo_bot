@@ -5,7 +5,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
 
 from database.db_client import db
-from keyboards.tasks_keyboard import TasksView, tasks_keyboard
+from keyboards.tasks_keyboard import TasksView, tasks_keyboard, edit_task
 
 router = Router()
 
@@ -25,7 +25,12 @@ async def task_list_view(call: CallbackQuery, callback_data: TasksView, state: F
         await state.set_state(CreateTask.description)
     elif callback_data.action == 'task':
         task = await db.get_task(callback_data.value)
-        await call.message.answer(task)
+        await call.message.answer(task, reply_markup=edit_task(callback_data.value))
+    elif callback_data.action == 'done':
+        await db.done_task(callback_data.value)
+        await call.answer('Задание выполнено!', show_alert=True)
+        tasks = await db.get_tasks(call.from_user.id)
+        await call.message.answer('Выберите задачу', reply_markup=tasks_keyboard(tasks))
 
 
 @router.message(CreateTask.description)
