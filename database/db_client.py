@@ -37,26 +37,21 @@ class Database:
             await conn.execute(query)
             await conn.close()
 
-    async def create_user_table(self):
+    async def migrate(self):
         await self.query_update("""
         CREATE TABLE IF NOT EXISTS users(
         id SERIAL PRIMARY KEY ,
         user_id INTEGER unique ,
         name varchar(500),
         phone varchar(30)
-        )
-        """)
-
-    async def create_tasks_table(self):
-        await self.query_update("""
-        
+        );
         CREATE TABLE IF NOT EXISTS tasks(
         id SERIAL PRIMARY KEY ,
-        description varchar(20),
+        description varchar(30),
         task TEXT,
         completed BOOLEAN DEFAULT FALSE,
-        list_id INTEGER REFERENCES users(id) ON DELETE CASCADE 
-        )
+        user_id INTEGER REFERENCES users(id) ON DELETE CASCADE 
+        );
         """)
 
     async def check_user(self, user_id: int) -> bool:

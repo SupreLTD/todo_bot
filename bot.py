@@ -17,8 +17,7 @@ async def main():
     dp.include_routers(start_handler.router,
                        task_handler.router,
                        )
-    await db.create_user_table()
-    await db.create_tasks_table()
+    await db.migrate()
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot)
 
