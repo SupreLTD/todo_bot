@@ -2,6 +2,10 @@ FROM python3.11
 
 WORKDIR /app
 
-COPY
+COPY requirements.txt .
 
-ENTRYPOINT ["top", "-b"]
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+CMD ["python3", "bot.py"]
