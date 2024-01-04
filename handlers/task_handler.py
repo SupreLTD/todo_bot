@@ -1,5 +1,5 @@
 from aiogram import Router, F
-from aiogram.types import Message, CallbackQuery
+from aiogram.types import Message, CallbackQuery, InlineQuery
 from aiogram.filters.command import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
@@ -78,3 +78,7 @@ async def view_done_tasks(message: Message):
         builder.row(to_home)
         await message.answer(answer, parse_mode='html', reply_markup=done_tasks_keyboard()) \
             if tasks else await message.answer(answer, reply_markup=builder.as_markup())
+
+# @router.inline_query(Command(commands=['search_tasks']))
+# async def search_tasks(query: InlineQuery):
+#     await query.answer('fg')
