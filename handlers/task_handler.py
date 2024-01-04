@@ -41,6 +41,7 @@ async def task_list_view(call: CallbackQuery, callback_data: TasksView, state: F
     elif callback_data.action == 'yes':
         await db.delete_done_task(call.from_user.id)
         await call.message.answer('Выполненные задачи удалены', reply_markup=start_keyboard())
+
     elif callback_data.action == 'no':
         tasks = await db.get_done_tasks(call.from_user.id)
         answer = '\n\n'.join([f'📍 {n}. {i.get("task")}' for n, i in enumerate(tasks)])
@@ -53,6 +54,7 @@ async def set_task(message: Message, state: FSMContext):
     await state.update_data(description=message.text)
     await message.answer('Введите задачу')
     await state.set_state(CreateTask.task)
+
 
 
 @router.message(CreateTask.task)
@@ -79,6 +81,4 @@ async def view_done_tasks(message: Message):
         await message.answer(answer, parse_mode='html', reply_markup=done_tasks_keyboard()) \
             if tasks else await message.answer(answer, reply_markup=builder.as_markup())
 
-# @router.inline_query(Command(commands=['search_tasks']))
-# async def search_tasks(query: InlineQuery):
-#     await query.answer('fg')
+
