@@ -22,7 +22,11 @@ class CreateTask(StatesGroup):
 async def task_list_view(call: CallbackQuery, callback_data: TasksView, state: FSMContext):
     if callback_data.action == 'tasks':
         tasks = await db.get_tasks(call.from_user.id)
-        await call.message.answer('Выберите задачу', reply_markup=tasks_keyboard(tasks))
+        if tasks:
+            answer = 'Выберите задачу'
+        else:
+            answer = 'Список задач пуст'
+        await call.message.answer(answer, reply_markup=tasks_keyboard(tasks))
     elif callback_data.action == 'create_list':
         await call.message.answer('Введите заголовок задачи, не более 20 символов')
         await state.set_state(CreateTask.description)
@@ -33,7 +37,11 @@ async def task_list_view(call: CallbackQuery, callback_data: TasksView, state: F
         await db.done_task(callback_data.value)
         await call.answer('Задание выполнено!', show_alert=True)
         tasks = await db.get_tasks(call.from_user.id)
-        await call.message.answer('Выберите задачу', reply_markup=tasks_keyboard(tasks))
+        if tasks:
+            answer = 'Выберите задачу'
+        else:
+            answer = 'Список задач пуст'
+        await call.message.answer(answer, reply_markup=tasks_keyboard(tasks))
     elif callback_data.action == 'home':
         await call.message.answer('Вы вернулись в главное меню', reply_markup=start_keyboard())
     elif callback_data.action == 'delete_task':
